@@ -9,6 +9,11 @@ export default new Router({
   routes: [
     {
       path: '/',
+      name: 'recipe',
+      component: recipe
+    },
+    {
+      path: '/producto',
       name: 'listado',
       component: listado
     },
@@ -16,11 +21,8 @@ export default new Router({
       path: '/ingrediente',
       name: 'ingrediente',
       component: ingrediente
-    },
-    {
-      path: '/recipe',
-      name: 'recipe',
-      component: recipe
     }
-  ]
+  ],
+  linkActiveClass: 'active',
+  mode: 'history'
 })

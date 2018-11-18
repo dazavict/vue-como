@@ -1,63 +1,66 @@
 <template>
 
   <div class="container">
-    <div class="ventana" v-show="cargando">
-      <div class="loader"></div>
+    <div class="ventana">
+     <div class="loading" id="ventana"><img src="../assets/spinner.gif" alt="loading" /><br/>Un momento, por favor...</div>
     </div>
-    <v-table
-      :columns="columns"
-      :rows="items"
-      :search-options="options"
-       :pagination-options="{
-          enabled: true,
-          mode: 'pages'
-        }"
-      >
-        <div slot="emptystate">
-          No se encontraron registros
-        </div>
-      </v-table>
-      <div class="top-50">
-        <v-table
-          :columns="columns2"
-          :rows="productos"
-          :search-options="options2"
-          :pagination-options="{
+
+    <div class="mt-12"  style="margin-top:20px;"  v-show="productos && productos.length > 0">
+      <v-table
+        :columns="columns"
+        :rows="items"
+        :search-options="options"
+        :pagination-options="{
             enabled: true,
             mode: 'pages'
-          }">
-          <template slot="table-row" slot-scope="props">
-            <span v-if="props.column.field == 'id'">
-              {{props.row.producto.id}}
-            </span>
-            <span v-else-if="props.column.field == 'title'">
-              {{props.row.producto.title}}
-            </span>
-            <span v-else-if="props.column.field == 'tags'">
-              <span v-if="props.row.producto.tags && props.row.producto.tags.indexOf(',') > -1 && props.row.producto.tags.split(',')" >
-                <span v-for="(tag, d) in props.row.producto.tags.split(',')" :key="d" class="badge badge-info">
-                  {{tag}}
-                </span>
-              </span>
-              <span v-else-if='props.row.producto.tags' class="badge badge-info">
-                {{props.row.producto.tags }}
-              </span>
-            </span>
-            <span v-else-if="props.column.field == 'people'">
-              {{props.row.producto.people}}
-            </span>
-            <span v-if="props.column.field == 'accion'">
-              <button class="btn btn-primary " @click="modalIngrediente(props.index)"  data-toggle="modal" data-target="#modalIngredientes" title="Ingredientes">
-                <font-awesome-icon icon="book" />
-              </button>
-            </span>
-          </template>
+          }"
+        >
           <div slot="emptystate">
             No se encontraron registros
           </div>
         </v-table>
+    </div>
+    <div class="mt-lg-12" style="margin-top:20px;" v-show="items && items.length > 0">
+      <v-table
+        :columns="columns2"
+        :rows="productos"
+        :search-options="options2"
+        :pagination-options="{
+          enabled: true,
+          mode: 'pages'
+        }">
+        <template slot="table-row" slot-scope="props">
+          <span v-if="props.column.field == 'id'">
+            {{props.row.producto.id}}
+          </span>
+          <span v-else-if="props.column.field == 'title'">
+            {{props.row.producto.title}}
+          </span>
+          <span v-else-if="props.column.field == 'tags'">
+            <span v-if="props.row.producto.tags && props.row.producto.tags.indexOf(',') > -1 && props.row.producto.tags.split(',')" >
+              <span v-for="(tag, d) in props.row.producto.tags.split(',')" :key="d" class="badge badge-info">
+                {{tag}}
+              </span>
+            </span>
+            <span v-else-if='props.row.producto.tags' class="badge badge-info">
+              {{props.row.producto.tags }}
+            </span>
+          </span>
+          <span v-else-if="props.column.field == 'people'">
+            {{props.row.producto.people}}
+          </span>
+          <span v-if="props.column.field == 'accion'">
+            <button class="btn btn-primary " @click="modalIngrediente(props.index)"  data-toggle="modal" data-target="#modalIngredientes" title="Ingredientes">
+              <font-awesome-icon icon="book" />
+            </button>
+          </span>
+        </template>
+        <div slot="emptystate">
+          No se encontraron registros
+        </div>
+      </v-table>
 
-      </div>
+    </div>
     <!-- The Modal -->
     <div class="modal" id="modalIngredientes">
       <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -111,7 +114,7 @@
 </template>
 <style scoped>
 .ventana {
-  position: fixed;
+  position: relative;
   top: 50%;
   left: 50%
 }
@@ -228,7 +231,6 @@ export default {
       return this.axios.get(this.url + 'items')
     },
     listadoRecipesWeek: function (ingredientes, productos) {
-      console.log(ingredientes, productos)
       return new Promise((resolve, reject) => {
         this.axios.get(this.url + 'weekRecipes/2502').then(weekRecipe => {
           this.recipes = weekRecipe.data
@@ -259,12 +261,11 @@ export default {
     },
     ventana: function () {
       var body
-      body = document.querySelector('.loader')
+      body = document.querySelector('#ventana')
       if (this.cargando) {
-        body.style.opacity = 1
+        body.style.display = 'none'
         this.cargando = false
       } else {
-        body.style.opacity = 0
         this.cargando = true
       }
     },
@@ -285,6 +286,7 @@ export default {
       return this.listadoRecipesWeek(this.ingredientes, productos.data)
     }).then(data => {
       this.ingredientes = []
+      this.ventana()
     }).catch(error => {
       console.log(error)
     })

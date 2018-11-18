@@ -39,7 +39,6 @@ export default {
     listadoIngredientes: function () {
       this.axios.get(this.url + 'items').then(response => {
         this.ingredientes = response.data
-        console.log(this.ingredientes)
       }).catch(error => {
         console.log(error)
       })

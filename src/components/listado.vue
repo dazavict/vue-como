@@ -43,7 +43,6 @@ export default {
     listadoIngredientes: function () {
       this.axios.get(this.url + 'items').then(response => {
         this.ingredientes = response.data
-        console.log(this.ingredientes)
       }).catch(error => {
         console.log(error)
       })
@@ -51,14 +50,12 @@ export default {
     listadoProductos: function () {
       this.axios.get(this.url + 'products?supermarket=elsuper' + this.name_producto).then(response => {
         this.items = response.data
-        console.log(this.items)
       }).catch(error => {
         console.log(error)
       })
     }
   },
   mounted () {
-    this.listadoIngredientes()
     this.listadoProductos()
   }
 }
